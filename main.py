@@ -1,7 +1,6 @@
-import sys, os, io, time
+import time
 
 import pygame
-import picamera
 
 from pygame.locals import *
 from camz import surface, camera
