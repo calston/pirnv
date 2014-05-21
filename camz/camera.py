@@ -4,8 +4,7 @@ import picamera
 class Camera(object):
     def __init__(self):
         self.camera = picamera.PiCamera()
-        self.camera.resolution = (800, 600)
-        self.camera.framerate = 30
+        self.camera.resolution = (640, 480)
         self.camera.rotation = 180
         self.camera.led = False
 
@@ -14,9 +13,6 @@ class Camera(object):
         self.loopStream = picamera.PiCameraCircularIO(self.camera, seconds=600)
     
     def captureStream(self):
-        if self.recording:
-            self.camera.wait_recording()
-
         stream = io.BytesIO()
         self.camera.capture(stream, format='jpeg', use_video_port=True, resize=(320, 240))
         stream.seek(0)
@@ -41,7 +37,7 @@ class Camera(object):
                     self.loopStream.seek(frame.position)
                     break
             while True:
-                buf = stream.read1()
+                buf = self.loopStream.read1()
                 if not buf:
                     break
                 output.write(buf)
