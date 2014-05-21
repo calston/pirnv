@@ -1,29 +1,33 @@
-import sys, os, io
+import sys, os, io, time
 
 import pygame
 import picamera
 
 from pygame.locals import *
-from camz import surface
+from camz import surface, camera
 
 
 surf = surface.FBSurface()
+camera = camera.Camera()
 
-camera = picamera.PiCamera()
-camera.resolution = (800, 600)
-camera.framerate = 30
-camera.rotation = 180
+camera.startRecording()
 
-while 1:
-    for event in pygame.event.get():
-        if event.type in (QUIT, KEYDOWN):
-            sys.exit()
+running = True
 
-    stream = io.BytesIO()
-    camera.capture(stream, format='jpeg', use_video_port=True, resize=(320, 240))
-    stream.seek(0)
-    cam = pygame.image.load(stream, 'jpeg').convert()
+while running:
+    cam = pygame.image.load(camera.captureStream())
+
+    text = surf.font.render(time.ctime(), False, (255, 0, 0))
     
-    surf.display_surface.blit(cam, (0,0))
+    cam.blit(text, (1,1))
+
+    surf.display.blit(cam, (0,0))
     pygame.display.update()
 
+    for event in pygame.event.get():
+        if event.type in (QUIT, KEYDOWN):
+            running = False
+
+camera.writeStream('test.h264')
+
+camera.stopRecording()

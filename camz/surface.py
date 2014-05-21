@@ -8,12 +8,12 @@ class FBSurface(object):
         pygame.init()
         pygame.mouse.set_visible(0)
 
-        self.display_surface = pygame.display.set_mode((320, 240), 0, 32)
-
-        self.display_surface.fill((255,255,255))
+        self.display = pygame.display.set_mode((320, 240), 0, 32)
 
         self.splash = pygame.image.load('images/pi_black_glow2.png').convert()
 
-        self.display_surface.blit(self.splash, (0,0))
-       
-        pygame.display.flip()
+        self.display.blit(self.splash, (0,0))
+        pygame.display.update()
+
+        self.font = pygame.font.Font('freesansbold.ttf', 12)
+
