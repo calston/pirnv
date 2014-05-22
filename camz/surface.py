@@ -5,6 +5,9 @@ from pygame.locals import *
 class FBSurface(object):
     def __init__(self):
         os.environ["SDL_FBDEV"] = "/dev/fb1"
+        os.environ["SDL_MOUSEDRV"] = "TSLIB"
+        os.environ["SDL_MOUSEDEV"] = "/dev/input/touchscreen"
+
         pygame.init()
         pygame.mouse.set_visible(0)
 
