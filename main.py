@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import time
 
 import pygame
@@ -19,10 +20,8 @@ colorBlack = (0,0,0)
 store = surf.font.render('SAVE', False, colorWhite)
 irnv = surf.font.render('IRNV', False, colorWhite)
 
-irnv_mode = False
-
 while running:
-    cam = camera.captureStream(irnv=irnv_mode)
+    cam = camera.captureStream()
 
     text = surf.font.render(time.ctime(), False, colorWhite)
     
@@ -51,7 +50,10 @@ while running:
 
             if (mx > 258) and (mx <320) and (my > 200) and (my < 240):
                 pygame.draw.rect(cam, colorBlack, (258, 200, 60, 40), 2)
-                irnv_mode = not irnv_mode
+                if camera.irnv:
+                    camera.irnvOff()
+                else:
+                    camera.irnvOn()
 
 
     surf.display.blit(cam, (0,0))

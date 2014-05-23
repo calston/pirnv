@@ -8,22 +8,48 @@ class Camera(object):
     def __init__(self):
         self.camera = picamera.PiCamera()
         self.camera.resolution = (1296,730)
-        self.camera.rotation = 180
+        self.camera.rotation = -90
         self.camera.led = False
+        self.camera.shutter_speed = 0
+        self.camera.video_stabilization = True
 
         self.recording = False
 
         self.loopStream = picamera.PiCameraCircularIO(self.camera, size=128*1024*1024)
+
+        self.irnv = False
+
+    def irnvOn(self):
+        self.irnv = True
+        self.camera.color_effects = (128, 128)
+        self.camera.contrast = 20
+        self.camera.brightness = 70
+        self.camera.exposure_mode = 'night'
+        self.ledOn()
+
+    def irnvOff(self):
+        self.irnv = False
+        self.camera.color_effects = None
+        self.camera.contrast = 0
+        self.camera.brightness = 50
+        self.camera.exposure_mode = 'auto'
+        self.ledOff()
+ 
+    def ledOn(self):
+        self.camera.led = True
+
+    def ledOff(self):
+        self.camera.led = False
     
-    def captureStream(self, irnv=True, width=320, height=240):
+    def captureStream(self, width=320, height=240):
         stream = io.BytesIO()
 
-        if irnv:
+        if self.irnv:
             self.camera.capture(stream, format='jpeg', use_video_port=True,
                 resize=(width, height))
             stream.seek(0)
 
-            image = Image.open(stream).convert('LA').convert('RGBA')
+            image = Image.open(stream).convert('L').convert('RGB')
 
             return pygame.image.fromstring(image.tostring(), image.size, image.mode)
 
